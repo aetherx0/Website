@@ -265,8 +265,8 @@ function ScrollUnderlineHeading({ text }: { text: string }) {
   return (
     <div ref={sectionRef} className="hero-name-lockup">
       <MagneticHeadline text={text} />
-      <svg className="hero-name-underline" viewBox="0 0 720 58" role="img" aria-label="Decorative blue underline">
-        <path ref={pathRef} d="M18 26 C70 58 105 58 140 28 C170 2 205 4 212 27 C219 50 188 60 174 37 C160 15 128 18 118 40 C108 62 140 68 166 46 C220 2 280 4 330 30 C380 58 418 58 450 28 C478 2 514 5 520 28 C526 51 496 60 482 37 C468 15 438 18 428 40 C418 62 450 68 476 46 C530 4 600 8 702 24" />
+      <svg className="hero-name-underline" viewBox="0 0 920 300" role="img" aria-label="Decorative blue growing loop">
+        <path ref={pathRef} d="M28 42 C120 55 164 92 175 154 C188 230 295 267 444 252 C600 236 764 226 846 159 C904 112 874 39 784 35 C673 30 578 92 595 170 C613 249 756 257 858 173" />
       </svg>
     </div>
   )

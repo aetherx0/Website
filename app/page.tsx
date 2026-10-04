@@ -144,13 +144,18 @@ function Cursor() {
   const reduce = useReducedMotion()
   const [position, setPosition] = useState({ x: -100, y: -100 })
   const [active, setActive] = useState(false)
+  const [label, setLabel] = useState('')
 
   useEffect(() => {
     if (reduce || typeof window === 'undefined' || window.matchMedia('(pointer: coarse)').matches) return
     const move = (event: MouseEvent) => setPosition({ x: event.clientX, y: event.clientY })
-    const over = (event: MouseEvent) => setActive(Boolean((event.target as HTMLElement).closest('a, button, .skill-badge, .project-card')))
-    window.addEventListener('mousemove', move)
-    window.addEventListener('mouseover', over)
+    const over = (event: MouseEvent) => {
+      const target = (event.target as HTMLElement).closest('[data-cursor], a, button, .skill-badge, .project-card') as HTMLElement | null
+      setActive(Boolean(target))
+      setLabel(target?.dataset.cursor ?? '')
+    }
+    window.addEventListener('mousemove', move, { passive: true })
+    window.addEventListener('mouseover', over, { passive: true })
     return () => {
       window.removeEventListener('mousemove', move)
       window.removeEventListener('mouseover', over)
@@ -160,7 +165,9 @@ function Cursor() {
   if (reduce) return null
   return (
     <>
-      <motion.div className={`cursor-ring ${active ? 'cursor-ring-active' : ''}`} animate={{ x: position.x - 18, y: position.y - 18 }} transition={{ type: 'spring', stiffness: 500, damping: 35 }} />
+      <motion.div className={`cursor-ring ${active ? 'cursor-ring-active' : ''}`} animate={{ x: position.x - 18, y: position.y - 18 }} transition={{ type: 'spring', stiffness: 500, damping: 35 }}>
+        {label ? <span className="cursor-label">{label}</span> : null}
+      </motion.div>
       <motion.div className="cursor-dot" animate={{ x: position.x - 3, y: position.y - 3 }} transition={{ type: 'spring', stiffness: 900, damping: 45 }} />
     </>
   )
@@ -287,9 +294,20 @@ function MagneticHeadline({ text }: { text: string }) {
 
 function ProjectCard({ project, index }: { project: typeof projects[number]; index: number }) {
   const [hovered, setHovered] = useState(false)
+  const [tilt, setTilt] = useState('perspective(1100px) rotateX(0deg) rotateY(0deg)')
+  const reduce = useReducedMotion()
+
+  const handleMove = (event: React.PointerEvent<HTMLElement>) => {
+    if (reduce || event.pointerType !== 'mouse') return
+    const bounds = event.currentTarget.getBoundingClientRect()
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5
+    setTilt(`perspective(1100px) rotateX(${-y * 7}deg) rotateY(${x * 9}deg) translateY(-8px)`)
+  }
+
   return (
     <Reveal delay={index * 0.1} className="project-card-wrap">
-      <article className="project-card" onPointerEnter={() => setHovered(true)} onPointerLeave={() => setHovered(false)}>
+      <article className="project-card" data-cursor="Explore" style={{ transform: tilt }} onPointerMove={handleMove} onPointerEnter={() => setHovered(true)} onPointerLeave={() => { setHovered(false); setTilt('perspective(1100px) rotateX(0deg) rotateY(0deg)') }}>
         <div className={`project-media ${project.theme}`}>
           <div className="media-grid" aria-hidden="true" />
           <div className="media-orbit media-orbit-one" aria-hidden="true" />
@@ -307,8 +325,8 @@ function ProjectCard({ project, index }: { project: typeof projects[number]; ind
           <p>{project.description}</p>
           <div className="project-tags">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
           <div className="project-actions">
-            <a href="#contact" className="text-link">View Details <Icon name="arrow" size={16} /></a>
-            <a href="https://github.com/aetherx0" className="text-link text-link-muted" target="_blank" rel="noreferrer">GitHub <Icon name="arrow" size={16} /></a>
+            <a href="#contact" data-cursor="Talk" className="text-link">View Details <Icon name="arrow" size={16} /></a>
+            <a href="https://github.com/aetherx0" data-cursor="Open" className="text-link text-link-muted" target="_blank" rel="noreferrer">GitHub <Icon name="arrow" size={16} /></a>
           </div>
         </div>
       </article>

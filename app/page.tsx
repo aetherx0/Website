@@ -166,6 +166,39 @@ function Cursor() {
   )
 }
 
+function AudioControl() {
+  const audioRef = useRef<HTMLAudioElement>(null)
+  const [muted, setMuted] = useState(true)
+
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.muted = true
+    void audio.play().catch(() => undefined)
+  }, [])
+
+  const toggleAudio = () => {
+    const audio = audioRef.current
+    if (!audio) return
+    const nextMuted = !muted
+    audio.muted = nextMuted
+    setMuted(nextMuted)
+    if (!nextMuted) void audio.play().catch(() => undefined)
+  }
+
+  return (
+    <div className="audio-control">
+      <audio ref={audioRef} autoPlay loop muted preload="auto">
+        <source src="/2026-10-0418-06-04.mp3" type="audio/mpeg" />
+      </audio>
+      <button className="audio-toggle" type="button" onClick={toggleAudio} aria-label={muted ? 'Unmute background audio' : 'Mute background audio'} aria-pressed={!muted}>
+        <span className="audio-icon" aria-hidden="true">{muted ? '◌' : ')))'}</span>
+        <span>{muted ? 'Sound off' : 'Sound on'}</span>
+      </button>
+    </div>
+  )
+}
+
 function MagneticHeadline({ text }: { text: string }) {
   const reduce = useReducedMotion()
   const letterRefs = useRef<(HTMLSpanElement | null)[]>([])
@@ -264,6 +297,7 @@ export default function Home() {
   return (
     <main className="site-shell">
       <Cursor />
+      <AudioControl />
       <nav className="site-nav" aria-label="Main navigation">
         <a className="brand-lockup" href="#home" aria-label="Ameya Raut home">
           <span className="brand-mark"><i /></span>

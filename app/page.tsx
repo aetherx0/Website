@@ -168,13 +168,18 @@ function Cursor() {
 
 function AudioControl() {
   const audioRef = useRef<HTMLAudioElement>(null)
-  const [muted, setMuted] = useState(true)
+  const [muted, setMuted] = useState(false)
 
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
-    audio.muted = true
-    void audio.play().catch(() => undefined)
+    audio.muted = false
+    void audio.play().catch(() => {
+      // Browsers may block audible autoplay. Keep the loop running muted until interaction.
+      audio.muted = true
+      setMuted(true)
+      void audio.play().catch(() => undefined)
+    })
   }, [])
 
   const toggleAudio = () => {
@@ -188,12 +193,12 @@ function AudioControl() {
 
   return (
     <div className="audio-control">
-      <audio ref={audioRef} autoPlay loop muted preload="auto">
+      <audio ref={audioRef} autoPlay loop preload="auto">
         <source src="/2026-10-0418-06-04.mp3" type="audio/mpeg" />
       </audio>
-      <button className="audio-toggle" type="button" onClick={toggleAudio} aria-label={muted ? 'Unmute background audio' : 'Mute background audio'} aria-pressed={!muted}>
+      <button className="audio-toggle" type="button" onClick={toggleAudio} aria-label={muted ? 'Enable background audio' : 'Mute background audio'} aria-pressed={!muted}>
         <span className="audio-icon" aria-hidden="true">{muted ? '◌' : ')))'}</span>
-        <span>{muted ? 'Sound off' : 'Sound on'}</span>
+        <span>{muted ? 'Enable sound' : 'Sound on'}</span>
       </button>
     </div>
   )

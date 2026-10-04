@@ -412,7 +412,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="site-footer section-wrap"><a className="brand-lockup footer-brand" href="#home"><span className="brand-mark"><img className="brand-avatar" src="/luffy-avatar.jpg" alt="" /><i /></span><span className="brand-name">Ameya Raut</span></a><span>© 2026 — Built with curiosity</span><div className="footer-links"><a href="https://github.com/aetherx0" target="_blank" rel="noreferrer">View My Work</a><a href="#contact">Download Resume</a></div></footer>
+      <footer className="site-footer section-wrap"><a className="brand-lockup footer-brand" href="#home"><span className="brand-mark"><img className="brand-avatar" src="/luffy-avatar.jpg" alt="" /><i /></span><span className="brand-name">Ameya Raut</span></a><span>© 2026 — Built with curiosity</span><div className="footer-links"><a href="https://github.com/aetherx0" target="_blank" rel="noreferrer">View My Work</a><a href="#contact">Download Resume</a><a className="back-to-top" href="#home" aria-label="Back to top">Back to top <span aria-hidden="true">↑</span></a></div></footer>
     </main>
   )
 }

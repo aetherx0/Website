@@ -189,7 +189,7 @@ function AudioControl() {
   return (
     <div className="audio-control">
       <audio ref={audioRef} autoPlay loop muted preload="auto">
-        <source src="/background-audio.wav" type="audio/wav" />
+        <source src="/audio/ambient-loop.wav" type="audio/wav" />
       </audio>
       <button className="audio-toggle" type="button" onClick={toggleAudio} aria-label={muted ? 'Unmute background audio' : 'Mute background audio'} aria-pressed={!muted}>
         <span className="audio-icon" aria-hidden="true">{muted ? '◌' : ')))'}</span>

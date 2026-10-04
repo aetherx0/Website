@@ -52,6 +52,7 @@ const projects = [
       'Self-directed study in Autodesk Fusion 360, and OnShape focusing on parametric modeling, physical constraints, and precision mechanical design.',
     tags: ['fusion 360', 'Parametric', 'Precision'],
     theme: 'project-blue',
+    detailsUrl: 'https://cad.onshape.com/documents/b167629520a32646a986791a/w/4d608fc7dc0398692c4d161b/e/3cbbfde2b2bd54fc60d3868c',
   },
   {
     number: '02',
@@ -298,7 +299,7 @@ function ProjectCard({ project, index }: { project: typeof projects[number]; ind
           <p>{project.description}</p>
           <div className="project-tags">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
           <div className="project-actions">
-            <a href="#contact" data-cursor="Talk" className="text-link">View Details <Icon name="arrow" size={16} /></a>
+            <a href={project.detailsUrl ?? '#contact'} data-cursor="Talk" className="text-link" target={project.detailsUrl ? '_blank' : undefined} rel={project.detailsUrl ? 'noreferrer' : undefined}>View Details <Icon name="arrow" size={16} /></a>
             <a href="https://github.com/aetherx0" data-cursor="Open" className="text-link text-link-muted" target="_blank" rel="noreferrer">GitHub <Icon name="arrow" size={16} /></a>
           </div>
         </div>

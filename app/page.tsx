@@ -346,7 +346,7 @@ export default function Home() {
       <ThemeControl />
       <nav className="site-nav" aria-label="Main navigation">
         <a className="brand-lockup" href="#home" aria-label="Ameya Raut home">
-          <span className="brand-mark"><i /></span>
+          <span className="brand-mark"><img className="brand-avatar" src="/luffy-avatar.jpg" alt="" /><i /></span>
           <span className="brand-name">Ameya Raut</span>
         </a>
         <div className={`nav-links ${menuOpen ? 'nav-links-open' : ''}`}>
@@ -415,14 +415,14 @@ export default function Home() {
               <a className="social-bubble" href="https://github.com/aetherx0" target="_blank" rel="noreferrer" aria-label="GitHub"><Icon name="github" size={19} /><span>GitHub</span></a>
               <a className="social-bubble" href="https://www.linkedin.com/in/ameyaraut/" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Icon name="linkedin" size={19} /><span>LinkedIn</span></a>
               <a className="social-bubble" href="mailto:ameyaraut2708@gmail.com" aria-label="Email"><Icon name="mail" size={19} /><span>Email</span></a>
-              <a className="social-bubble" href="https://x.com/ameyaraut" target="_blank" rel="noreferrer" aria-label="Twitter"><Icon name="twitter" size={19} /><span>Twitter</span></a>
+              <a className="social-bubble" href="https://x.com/AmeyaRaut155567" target="_blank" rel="noreferrer" aria-label="Twitter"><Icon name="twitter" size={19} /><span>Twitter</span></a>
               <a className="social-bubble" href="https://discord.com/users/973825553540984902" target="_blank" rel="noreferrer" aria-label="Discord"><Icon name="discord" size={19} /><span>Discord</span></a>
             </div>
           </div>
         </div>
       </section>
 
-      <footer className="site-footer section-wrap"><a className="brand-lockup footer-brand" href="#home"><span className="brand-mark"><i /></span><span className="brand-name">Ameya Raut</span></a><span>© 2026 — Built with curiosity</span><div className="footer-links"><a href="https://github.com/aetherx0" target="_blank" rel="noreferrer">View My Work</a><a href="#contact">Download Resume</a></div></footer>
+      <footer className="site-footer section-wrap"><a className="brand-lockup footer-brand" href="#home"><span className="brand-mark"><img className="brand-avatar" src="/luffy-avatar.jpg" alt="" /><i /></span><span className="brand-name">Ameya Raut</span></a><span>© 2026 — Built with curiosity</span><div className="footer-links"><a href="https://github.com/aetherx0" target="_blank" rel="noreferrer">View My Work</a><a href="#contact">Download Resume</a></div></footer>
     </main>
   )
 }

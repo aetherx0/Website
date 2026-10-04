@@ -4,7 +4,8 @@
 @tailwind utilities;
 
 :root { --pearl: #fafafa; --ink: #111111; --slate: #555555; --muted: #8b8b91; --line: #e8e8eb; --white: #ffffff; --cobalt: #2563eb; --cobalt-soft: #eaf1ff; }
-* { box-sizing: border-box; }
+* { box-sizing: border-box; cursor: default; }
+a, button, [role='button'] { cursor: pointer; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--pearl); color: var(--ink); font-family: 'Inter', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
 a { color: inherit; text-decoration: none; }

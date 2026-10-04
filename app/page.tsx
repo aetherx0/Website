@@ -199,6 +199,33 @@ function AudioControl() {
   )
 }
 
+function ThemeControl() {
+  const [darkMode, setDarkMode] = useState(false)
+
+  useEffect(() => {
+    const savedTheme = window.localStorage.getItem('ameya-theme')
+    const isDark = savedTheme === 'dark'
+    setDarkMode(isDark)
+    document.documentElement.dataset.theme = isDark ? 'dark' : 'light'
+  }, [])
+
+  const toggleTheme = () => {
+    const nextDarkMode = !darkMode
+    setDarkMode(nextDarkMode)
+    document.documentElement.dataset.theme = nextDarkMode ? 'dark' : 'light'
+    window.localStorage.setItem('ameya-theme', nextDarkMode ? 'dark' : 'light')
+  }
+
+  return (
+    <div className="theme-control">
+      <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} aria-pressed={darkMode}>
+        <span className="theme-icon" aria-hidden="true">{darkMode ? '☀' : '☾'}</span>
+        <span>{darkMode ? 'Light mode' : 'Dark mode'}</span>
+      </button>
+    </div>
+  )
+}
+
 function MagneticHeadline({ text }: { text: string }) {
   const reduce = useReducedMotion()
   const letterRefs = useRef<(HTMLSpanElement | null)[]>([])
@@ -298,6 +325,7 @@ export default function Home() {
     <main className="site-shell">
       <Cursor />
       <AudioControl />
+      <ThemeControl />
       <nav className="site-nav" aria-label="Main navigation">
         <a className="brand-lockup" href="#home" aria-label="Ameya Raut home">
           <span className="brand-mark"><i /></span>

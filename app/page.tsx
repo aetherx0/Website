@@ -292,35 +292,6 @@ function MagneticHeadline({ text }: { text: string }) {
   )
 }
 
-function HeroFocusVisual() {
-  const [tilt, setTilt] = useState('perspective(900px) rotateX(0deg) rotateY(0deg)')
-  const reduce = useReducedMotion()
-
-  const handleMove = (event: React.PointerEvent<HTMLElement>) => {
-    if (reduce || event.pointerType !== 'mouse') return
-    const bounds = event.currentTarget.getBoundingClientRect()
-    const x = (event.clientX - bounds.left) / bounds.width - 0.5
-    const y = (event.clientY - bounds.top) / bounds.height - 0.5
-    setTilt(`perspective(900px) rotateX(${-y * 8}deg) rotateY(${x * 10}deg)`)
-  }
-
-  return (
-    <aside className="hero-focus-visual" data-cursor="Inspect" style={{ transform: tilt }} onPointerMove={handleMove} onPointerLeave={() => setTilt('perspective(900px) rotateX(0deg) rotateY(0deg)')} aria-label="Dual focus: mechanical systems and data intelligence">
-      <div className="focus-topline"><span>DUAL FOCUS</span><span className="focus-live"><i /> LIVE SYSTEM</span></div>
-      <div className="focus-orbital-stage">
-        <div className="focus-orbit focus-orbit-one" />
-        <div className="focus-orbit focus-orbit-two" />
-        <div className="focus-orbit focus-orbit-three" />
-        <span className="focus-node focus-node-one" /><span className="focus-node focus-node-two" /><span className="focus-node focus-node-three" />
-        <div className="focus-core"><span>AMR</span><b>02</b></div>
-      </div>
-      <div className="focus-chart" aria-hidden="true"><span /><span /><span /><span /><span /><span /><span /></div>
-      <div className="focus-labels"><span>MECHANICAL<br />SYSTEMS</span><span>DATA<br />INTELLIGENCE</span></div>
-      <div className="focus-stats"><span><b>02</b> disciplines</span><span><b>13</b> tools</span><span><b>∞</b> curiosity</span></div>
-    </aside>
-  )
-}
-
 function ProjectCard({ project, index }: { project: typeof projects[number]; index: number }) {
   const [hovered, setHovered] = useState(false)
   const [tilt, setTilt] = useState('perspective(1100px) rotateX(0deg) rotateY(0deg)')
@@ -404,7 +375,6 @@ export default function Home() {
           <p className="hero-subtext">Building at the intersection of physical systems and data-driven intelligence.</p>
           <div className="hero-actions"><MagneticLink href="#projects">View My Work</MagneticLink><MagneticLink href="#contact" secondary>Let&apos;s Talk</MagneticLink></div>
         </div>
-        <HeroFocusVisual />
         <div className="hero-bottomline"><span>01 / 04</span><span>Scroll to explore <span className="scroll-arrow">↘</span></span><span>Based in India · 2026</span></div>
         <div className="hero-side-note">01<br /><span>ENGINEER<br />IN MOTION</span></div>
       </section>

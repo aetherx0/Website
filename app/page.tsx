@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import type { ReactNode } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 type IconName =
   | 'html'
@@ -226,6 +228,87 @@ function ThemeControl() {
   )
 }
 
+function ScrollSequenceCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const reduce = useReducedMotion()
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const wrapper = canvas?.closest('.scroll-sequence-wrapper')
+    if (!canvas || !wrapper) return
+    const context = canvas.getContext('2d')
+    if (!context) return
+
+    gsap.registerPlugin(ScrollTrigger)
+    const frameCount = 60
+    const images = Array.from({ length: frameCount }, (_, index) => {
+      const image = new Image()
+      image.decoding = 'async'
+      image.src = `/sequence/frame_${String(index + 1).padStart(4, '0')}.jpg`
+      return image
+    })
+    let currentFrame = 0
+
+    const render = (frameIndex: number) => {
+      const image = images[frameIndex]
+      if (!image?.complete || !image.naturalWidth) return
+      const width = canvas.clientWidth
+      const height = canvas.clientHeight
+      if (!width || !height) return
+      const scale = Math.max(width / image.naturalWidth, height / image.naturalHeight)
+      const drawWidth = image.naturalWidth * scale
+      const drawHeight = image.naturalHeight * scale
+      context.clearRect(0, 0, width, height)
+      context.drawImage(image, (width - drawWidth) / 2, (height - drawHeight) / 2, drawWidth, drawHeight)
+      currentFrame = frameIndex
+    }
+
+    const resize = () => {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2)
+      canvas.width = Math.floor(canvas.clientWidth * ratio)
+      canvas.height = Math.floor(canvas.clientHeight * ratio)
+      context.setTransform(ratio, 0, 0, ratio, 0, 0)
+      render(currentFrame)
+      ScrollTrigger.refresh()
+    }
+
+    images.forEach((image, index) => {
+      image.onload = () => {
+        if (index === 0) render(0)
+      }
+    })
+    resize()
+    window.addEventListener('resize', resize)
+
+    if (reduce) {
+      return () => window.removeEventListener('resize', resize)
+    }
+
+    const frameState = { index: 0 }
+    const tween = gsap.to(frameState, {
+      index: frameCount - 1,
+      ease: 'none',
+      snap: 'index',
+      scrollTrigger: {
+        trigger: wrapper,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.5,
+        invalidateOnRefresh: true,
+        onUpdate: () => render(Math.round(frameState.index)),
+      },
+    })
+
+    return () => {
+      window.removeEventListener('resize', resize)
+      tween.scrollTrigger?.kill()
+      tween.kill()
+    }
+  }, [reduce])
+
+  return <canvas ref={canvasRef} className="sequence-canvas" aria-label="Interactive engineering animation" />
+}
+
 function MagneticHeadline({ text }: { text: string }) {
   const reduce = useReducedMotion()
   const letterRefs = useRef<(HTMLSpanElement | null)[]>([])
@@ -341,24 +424,24 @@ export default function Home() {
         <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation" aria-expanded={menuOpen}><span /><span /></button>
       </nav>
 
-      <section className="hero" id="home">
-        <div className="hero-visual" aria-hidden="true">
-          <video className="hero-video" autoPlay muted loop playsInline poster="/hero-poster.svg">
-            <source src="/hero-loop.mp4" type="video/mp4" />
-          </video>
-          <div className="hero-video-fallback" />
-          <div className="hero-wash" />
-          <div className="hero-scanline" />
+      <section className="hero scroll-sequence-wrapper" id="home">
+        <div className="scroll-sequence-sticky">
+          <div className="hero-visual" aria-hidden="true">
+            <ScrollSequenceCanvas />
+            <div className="hero-video-fallback" />
+            <div className="hero-wash" />
+            <div className="hero-scanline" />
+          </div>
+          <div className="hero-grid" aria-hidden="true" />
+          <div className="hero-content">
+            <div className="hero-kicker"><span className="eyebrow-line" /> Mechanical systems / data intelligence</div>
+            <h1><MagneticHeadline text="Ameya Raut" /><span className="hero-headline">{headline.split(' ').map((word, wordIndex) => <span className="headline-word" key={word}>{word.split('').map((character, charIndex) => <motion.span key={`${word}-${charIndex}`} initial={reduce ? false : { opacity: 0, y: 18, filter: 'blur(6px)' }} animate={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ delay: 0.22 + (wordIndex * 6 + charIndex) * 0.045, duration: 0.68, ease: [0.22, 1, 0.36, 1] }}>{character}</motion.span>)}{wordIndex < headline.split(' ').length - 1 ? <span className="headline-space">{'\u00a0'}</span> : null}</span>)}</span></h1>
+            <p className="hero-subtext">Building at the intersection of physical systems and data-driven intelligence.</p>
+            <div className="hero-actions"><MagneticLink href="#projects">View My Work</MagneticLink><MagneticLink href="#contact" secondary>Let&apos;s Talk</MagneticLink></div>
+          </div>
+          <div className="hero-bottomline"><span>01 / 04</span><span>Scroll to explore <span className="scroll-arrow">↘</span></span><span>Based in India · 2026</span></div>
+          <div className="hero-side-note">01<br /><span>ENGINEER<br />IN MOTION</span></div>
         </div>
-        <div className="hero-grid" aria-hidden="true" />
-        <div className="hero-content">
-          <div className="hero-kicker"><span className="eyebrow-line" /> Mechanical systems / data intelligence</div>
-          <h1><MagneticHeadline text="Ameya Raut" /><span className="hero-headline">{headline.split(' ').map((word, wordIndex) => <span className="headline-word" key={word}>{word.split('').map((character, charIndex) => <motion.span key={`${word}-${charIndex}`} initial={reduce ? false : { opacity: 0, y: 18, filter: 'blur(6px)' }} animate={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ delay: 0.22 + (wordIndex * 6 + charIndex) * 0.045, duration: 0.68, ease: [0.22, 1, 0.36, 1] }}>{character}</motion.span>)}{wordIndex < headline.split(' ').length - 1 ? <span className="headline-space">{'\u00a0'}</span> : null}</span>)}</span></h1>
-          <p className="hero-subtext">Building at the intersection of physical systems and data-driven intelligence.</p>
-          <div className="hero-actions"><MagneticLink href="#projects">View My Work</MagneticLink><MagneticLink href="#contact" secondary>Let&apos;s Talk</MagneticLink></div>
-        </div>
-        <div className="hero-bottomline"><span>01 / 04</span><span>Scroll to explore <span className="scroll-arrow">↘</span></span><span>Based in India · 2026</span></div>
-        <div className="hero-side-note">01<br /><span>ENGINEER<br />IN MOTION</span></div>
       </section>
 
       <section className="about-section section-wrap" id="about">

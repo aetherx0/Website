@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import type { ReactNode } from 'react'
 
 type IconName =
@@ -292,34 +292,6 @@ function MagneticHeadline({ text }: { text: string }) {
   )
 }
 
-function RoboticArmReference() {
-  const reduce = useReducedMotion()
-  const pointerX = useMotionValue(0)
-  const pointerY = useMotionValue(0)
-  const springX = useSpring(pointerX, { stiffness: 110, damping: 24, mass: .8 })
-  const springY = useSpring(pointerY, { stiffness: 110, damping: 24, mass: .8 })
-  const rotateX = useTransform(springY, [-.5, .5], [-2.5, 2.5])
-  const rotateY = useTransform(springX, [-.5, .5], [1.8, -1.8])
-  const offsetX = useTransform(springX, [-.5, .5], [-5, 5])
-  const offsetY = useTransform(springY, [-.5, .5], [-3, 3])
-
-  return (
-    <div className="robotic-arm-stage robotic-arm-reference-stage" onPointerMove={(event) => {
-      if (reduce || event.pointerType !== 'mouse') return
-      const bounds = event.currentTarget.getBoundingClientRect()
-      pointerX.set((event.clientX - bounds.left) / bounds.width - .5)
-      pointerY.set((event.clientY - bounds.top) / bounds.height - .5)
-    }} onPointerLeave={() => { pointerX.set(0); pointerY.set(0) }} aria-label="Detailed industrial robotic arm reference" role="img">
-      <motion.div className="robotic-arm-reference-frame" style={reduce ? undefined : { rotateX, rotateY, x: offsetX, y: offsetY }}>
-        <img className="robotic-arm-reference-image" src="/robot-arm-reference.png" alt="Detailed silver industrial robotic arm with gripper and technical automation overlays" />
-      </motion.div>
-      <div className="robot-reference-callout robot-reference-callout-top"><span className="callout-dot" /><span>REAL-TIME SYSTEM<br /><b>ARM / 06 AXIS</b></span></div>
-      <div className="robot-reference-callout robot-reference-callout-bottom"><span className="callout-line" /><span>INDUSTRIAL<br /><b>END EFFECTOR</b></span></div>
-      <span className="robotic-arm-caption">REFERENCE / INDUSTRIAL ROBOT <i>•</i> LIVE POINTER MAP</span>
-    </div>
-  )
-}
-
 function ProjectCard({ project, index }: { project: typeof projects[number]; index: number }) {
   const [hovered, setHovered] = useState(false)
   const [tilt, setTilt] = useState('perspective(1100px) rotateX(0deg) rotateY(0deg)')
@@ -397,14 +369,11 @@ export default function Home() {
           <div className="hero-scanline" />
         </div>
         <div className="hero-grid" aria-hidden="true" />
-        <div className="hero-layout">
-          <div className="hero-content">
+        <div className="hero-content">
           <div className="hero-kicker"><span className="eyebrow-line" /> Mechanical systems / data intelligence</div>
           <h1><MagneticHeadline text="Ameya Raut" /><span className="hero-headline">{headline.split(' ').map((word, wordIndex) => <span className="headline-word" key={word}>{word.split('').map((character, charIndex) => <motion.span key={`${word}-${charIndex}`} initial={reduce ? false : { opacity: 0, y: 18, filter: 'blur(6px)' }} animate={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ delay: 0.22 + (wordIndex * 6 + charIndex) * 0.045, duration: 0.68, ease: [0.22, 1, 0.36, 1] }}>{character}</motion.span>)}{wordIndex < headline.split(' ').length - 1 ? <span className="headline-space">{'\u00a0'}</span> : null}</span>)}</span></h1>
           <p className="hero-subtext">Building at the intersection of physical systems and data-driven intelligence.</p>
           <div className="hero-actions"><MagneticLink href="#projects">View My Work</MagneticLink><MagneticLink href="#contact" secondary>Let&apos;s Talk</MagneticLink></div>
-          </div>
-          <RoboticArmReference />
         </div>
         <div className="hero-bottomline"><span>01 / 04</span><span>Scroll to explore <span className="scroll-arrow">↘</span></span><span>Based in India · 2026</span></div>
         <div className="hero-side-note">01<br /><span>ENGINEER<br />IN MOTION</span></div>

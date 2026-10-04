@@ -226,6 +226,52 @@ function ThemeControl() {
   )
 }
 
+function ScrollUnderlineHeading({ text }: { text: string }) {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const pathRef = useRef<SVGPathElement>(null)
+  const reduce = useReducedMotion()
+
+  useEffect(() => {
+    const path = pathRef.current
+    const section = sectionRef.current
+    if (!path || !section) return
+    const length = path.getTotalLength()
+    path.style.strokeDasharray = `${length}`
+    path.style.strokeDashoffset = `${reduce ? 0 : length}`
+    if (reduce) return
+
+    let frame = 0
+    const update = () => {
+      const bounds = section.getBoundingClientRect()
+      const start = window.innerHeight * 0.78
+      const end = -Math.max(bounds.height * 0.35, 260)
+      const progress = Math.min(1, Math.max(0, (start - bounds.top) / (start - end)))
+      path.style.strokeDashoffset = `${length * (1 - progress)}`
+      frame = 0
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }, [reduce])
+
+  return (
+    <div ref={sectionRef} className="hero-name-lockup">
+      <MagneticHeadline text={text} />
+      <svg className="hero-name-underline" viewBox="0 0 720 58" role="img" aria-label="Decorative blue underline">
+        <path ref={pathRef} d="M18 31 C 150 52, 258 17, 370 31 S 575 48, 702 20" />
+      </svg>
+    </div>
+  )
+}
+
 function MagneticHeadline({ text }: { text: string }) {
   const reduce = useReducedMotion()
   const letterRefs = useRef<(HTMLSpanElement | null)[]>([])
@@ -353,7 +399,7 @@ export default function Home() {
         <div className="hero-grid" aria-hidden="true" />
         <div className="hero-content">
           <div className="hero-kicker"><span className="eyebrow-line" /> Mechanical systems / data intelligence</div>
-          <h1><MagneticHeadline text="Ameya Raut" /><span className="hero-headline">{headline.split(' ').map((word, wordIndex) => <span className="headline-word" key={word}>{word.split('').map((character, charIndex) => <motion.span key={`${word}-${charIndex}`} initial={reduce ? false : { opacity: 0, y: 18, filter: 'blur(6px)' }} animate={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ delay: 0.22 + (wordIndex * 6 + charIndex) * 0.045, duration: 0.68, ease: [0.22, 1, 0.36, 1] }}>{character}</motion.span>)}{wordIndex < headline.split(' ').length - 1 ? <span className="headline-space">{'\u00a0'}</span> : null}</span>)}</span></h1>
+          <h1><ScrollUnderlineHeading text="Ameya Ashok Raut" /><span className="hero-headline">{headline.split(' ').map((word, wordIndex) => <span className="headline-word" key={word}>{word.split('').map((character, charIndex) => <motion.span key={`${word}-${charIndex}`} initial={reduce ? false : { opacity: 0, y: 18, filter: 'blur(6px)' }} animate={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }} transition={{ delay: 0.22 + (wordIndex * 6 + charIndex) * 0.045, duration: 0.68, ease: [0.22, 1, 0.36, 1] }}>{character}</motion.span>)}{wordIndex < headline.split(' ').length - 1 ? <span className="headline-space">{'\u00a0'}</span> : null}</span>)}</span></h1>
           <p className="hero-subtext">Building at the intersection of physical systems and data-driven intelligence.</p>
           <div className="hero-actions"><MagneticLink href="#projects">View My Work</MagneticLink><MagneticLink href="#contact" secondary>Let&apos;s Talk</MagneticLink></div>
         </div>

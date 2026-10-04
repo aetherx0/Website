@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import type { ReactNode } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 type IconName =
   | 'html'
@@ -235,30 +237,27 @@ function ScrollUnderlineHeading({ text }: { text: string }) {
     const path = pathRef.current
     const section = sectionRef.current
     if (!path || !section) return
+
+    gsap.registerPlugin(ScrollTrigger)
     const length = path.getTotalLength()
-    path.style.strokeDasharray = `${length}`
-    path.style.strokeDashoffset = `${reduce ? 0 : length}`
+    gsap.set(path, { strokeDasharray: length, strokeDashoffset: reduce ? 0 : length })
     if (reduce) return
 
-    let frame = 0
-    const update = () => {
-      const bounds = section.getBoundingClientRect()
-      const start = window.innerHeight * 0.78
-      const end = -Math.max(bounds.height * 0.35, 260)
-      const progress = Math.min(1, Math.max(0, (start - bounds.top) / (start - end)))
-      path.style.strokeDashoffset = `${length * (1 - progress)}`
-      frame = 0
-    }
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update)
-    }
-    update()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
+    const tween = gsap.to(path, {
+      strokeDashoffset: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 78%',
+        end: 'bottom 18%',
+        scrub: 1,
+        invalidateOnRefresh: true,
+      },
+    })
+
     return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-      if (frame) cancelAnimationFrame(frame)
+      tween.scrollTrigger?.kill()
+      tween.kill()
     }
   }, [reduce])
 

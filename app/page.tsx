@@ -105,10 +105,10 @@ function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; 
   return (
     <motion.div
       className={className}
-      initial={reduce ? false : { opacity: 0, y: 28 }}
-      whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.18 }}
-      transition={{ duration: 0.72, delay, ease: [0.22, 1, 0.36, 1] }}
+      initial={reduce ? false : { opacity: 0, y: 22, filter: 'blur(7px)' }}
+      whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+      viewport={{ once: true, amount: 0.24, margin: '0px 0px -8% 0px' }}
+      transition={{ duration: 0.88, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
@@ -201,33 +201,6 @@ function AudioControl() {
       <button className="audio-toggle" type="button" onClick={toggleAudio} aria-label={muted ? 'Unmute background audio' : 'Mute background audio'} aria-pressed={!muted}>
         <span className="audio-icon" aria-hidden="true">{muted ? '◌' : ')))'}</span>
         <span>{muted ? 'Sound off' : 'Sound on'}</span>
-      </button>
-    </div>
-  )
-}
-
-function ThemeControl() {
-  const [darkMode, setDarkMode] = useState(false)
-
-  useEffect(() => {
-    const savedTheme = window.localStorage.getItem('ameya-theme')
-    const isDark = savedTheme === 'dark'
-    setDarkMode(isDark)
-    document.documentElement.dataset.theme = isDark ? 'dark' : 'light'
-  }, [])
-
-  const toggleTheme = () => {
-    const nextDarkMode = !darkMode
-    setDarkMode(nextDarkMode)
-    document.documentElement.dataset.theme = nextDarkMode ? 'dark' : 'light'
-    window.localStorage.setItem('ameya-theme', nextDarkMode ? 'dark' : 'light')
-  }
-
-  return (
-    <div className="theme-control">
-      <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} aria-pressed={darkMode}>
-        <span className="theme-icon" aria-hidden="true">{darkMode ? '☀' : '☾'}</span>
-        <span>{darkMode ? 'Light mode' : 'Dark mode'}</span>
       </button>
     </div>
   )
@@ -343,7 +316,6 @@ export default function Home() {
     <main className="site-shell">
       <Cursor />
       <AudioControl />
-      <ThemeControl />
       <nav className="site-nav" aria-label="Main navigation">
         <a className="brand-lockup" href="#home" aria-label="Ameya Raut home">
           <span className="brand-mark"><img className="brand-avatar" src="/luffy-avatar.jpg" alt="" /><i /></span>

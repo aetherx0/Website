@@ -292,6 +292,56 @@ function MagneticHeadline({ text }: { text: string }) {
   )
 }
 
+function RoboticArm() {
+  const [armMotion, setArmMotion] = useState({ x: 0, y: 0, rotate: 0 })
+  const reduce = useReducedMotion()
+
+  const handleMove = (event: React.PointerEvent<HTMLElement>) => {
+    if (reduce || event.pointerType !== 'mouse') return
+    const bounds = event.currentTarget.getBoundingClientRect()
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5
+    setArmMotion({ x: x * 12, y: y * 10, rotate: x * 4 })
+  }
+
+  return (
+    <div className="robotic-arm-wrap" data-cursor="Inspect" onPointerMove={handleMove} onPointerLeave={() => setArmMotion({ x: 0, y: 0, rotate: 0 })} aria-label="Interactive robotic arm illustration">
+      <motion.div className="robotic-arm-scene" animate={reduce ? undefined : armMotion} transition={{ type: 'spring', stiffness: 90, damping: 18 }}>
+        <div className="arm-badge arm-badge-top"><span>AXIS 05</span><b>READY</b></div>
+        <div className="arm-badge arm-badge-side"><span>TORQUE</span><b>84.2 N·m</b></div>
+        <div className="arm-badge arm-badge-bottom"><span>PATH / 04</span><b>0.018 mm</b></div>
+        <svg className="robotic-arm-svg" viewBox="0 0 560 620" role="img" aria-label="Silver industrial robotic arm with blue technical accents">
+          <defs>
+            <linearGradient id="armMetal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#f7f9fc" /><stop offset=".4" stopColor="#aeb8c7" /><stop offset=".72" stopColor="#596678" /><stop offset="1" stopColor="#202b39" /></linearGradient>
+            <linearGradient id="armDark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#647286" /><stop offset=".55" stopColor="#202b38" /><stop offset="1" stopColor="#0d1520" /></linearGradient>
+            <linearGradient id="armBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#d9e7ff" /><stop offset=".45" stopColor="#5c8ff0" /><stop offset="1" stopColor="#1d4ed8" /></linearGradient>
+            <filter id="armShadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="18" stdDeviation="16" floodColor="#163b82" floodOpacity=".2" /></filter>
+          </defs>
+          <path className="arm-guide" d="M92 550H472M120 520V102M120 102H468M410 84v430" />
+          <g filter="url(#armShadow)">
+            <ellipse cx="258" cy="556" rx="142" ry="27" fill="url(#armDark)" opacity=".9" />
+            <ellipse cx="258" cy="547" rx="111" ry="20" fill="#dce5f1" stroke="#607086" strokeWidth="3" />
+            <path d="M174 540 192 470 322 470 344 540Z" fill="url(#armMetal)" stroke="#4d5b6d" strokeWidth="4" />
+            <path d="M208 470 214 320 294 320 307 470Z" fill="url(#armDark)" stroke="#3d4c5e" strokeWidth="4" />
+            <path d="m213 345 79-24 87-154 50 30-98 184-80 26Z" fill="url(#armMetal)" stroke="#405065" strokeWidth="5" />
+            <path d="m363 181 52-14 80 58-31 50-67-48Z" fill="url(#armDark)" stroke="#26364a" strokeWidth="5" />
+            <path d="m454 225 55 7 21 35-36 39-49-20Z" fill="url(#armMetal)" stroke="#3f5066" strokeWidth="4" />
+            <path d="m493 282 31 2 15 27-22 30-31-10-9-27Z" fill="url(#armBlue)" stroke="#254b9f" strokeWidth="4" />
+            <path d="m513 332 24 7-8 68-25 22-10-18Z" fill="url(#armDark)" stroke="#293a4f" strokeWidth="4" />
+            <path d="m502 422 28 7 19 19-12 11-31-8-18-17Z" fill="url(#armBlue)" stroke="#254b9f" strokeWidth="3" />
+            <circle cx="252" cy="319" r="46" fill="url(#armBlue)" stroke="#29477b" strokeWidth="6" /><circle cx="252" cy="319" r="19" fill="#182536" stroke="#bcd3ff" strokeWidth="4" />
+            <circle cx="410" cy="186" r="29" fill="url(#armBlue)" stroke="#29477b" strokeWidth="5" /><circle cx="410" cy="186" r="11" fill="#132235" stroke="#c6dcff" strokeWidth="3" />
+            <circle cx="487" cy="252" r="20" fill="#162638" stroke="#a9c8ff" strokeWidth="4" />
+            <path d="M501 470 477 507M526 472 544 505" stroke="#1c2b3b" strokeWidth="11" strokeLinecap="round" /><path d="M477 507 465 522M544 505 554 520" stroke="#5b6f86" strokeWidth="7" strokeLinecap="round" />
+            <path d="M222 465h83" stroke="#b9d1ff" strokeWidth="5" opacity=".75" /><path d="M377 147 426 170" stroke="#b9d1ff" strokeWidth="4" opacity=".7" />
+          </g>
+          <g className="arm-signal"><circle cx="410" cy="186" r="40" /><circle cx="252" cy="319" r="61" /></g>
+        </svg>
+      </motion.div>
+    </div>
+  )
+}
+
 function ProjectCard({ project, index }: { project: typeof projects[number]; index: number }) {
   const [hovered, setHovered] = useState(false)
   const [tilt, setTilt] = useState('perspective(1100px) rotateX(0deg) rotateY(0deg)')
@@ -375,6 +425,7 @@ export default function Home() {
           <p className="hero-subtext">Building at the intersection of physical systems and data-driven intelligence.</p>
           <div className="hero-actions"><MagneticLink href="#projects">View My Work</MagneticLink><MagneticLink href="#contact" secondary>Let&apos;s Talk</MagneticLink></div>
         </div>
+        <RoboticArm />
         <div className="hero-bottomline"><span>01 / 04</span><span>Scroll to explore <span className="scroll-arrow">↘</span></span><span>Based in India · 2026</span></div>
         <div className="hero-side-note">01<br /><span>ENGINEER<br />IN MOTION</span></div>
       </section>

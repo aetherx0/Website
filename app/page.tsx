@@ -105,10 +105,10 @@ function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; 
   return (
     <motion.div
       className={className}
-      initial={reduce ? false : { opacity: 0, y: 22, filter: 'blur(7px)' }}
-      whileInView={reduce ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
-      viewport={{ once: true, amount: 0.24, margin: '0px 0px -8% 0px' }}
-      transition={{ duration: 0.88, delay, ease: [0.22, 1, 0.36, 1] }}
+      initial={reduce ? false : { opacity: 0, y: 26, scale: 0.985, filter: 'blur(9px)' }}
+      whileInView={reduce ? undefined : { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+      viewport={{ once: true, amount: 0.2, margin: '0px 0px -10% 0px' }}
+      transition={{ duration: 1, delay, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </motion.div>

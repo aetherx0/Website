@@ -310,13 +310,30 @@ function ProjectCard({ project, index }: { project: typeof projects[number]; ind
 export default function Home() {
   const reduce = useReducedMotion()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [navOnDark, setNavOnDark] = useState(false)
   const headline = 'Mechanical Engineering & Data Science'
+
+  useEffect(() => {
+    const updateNavTone = () => {
+      const contact = document.getElementById('contact')
+      if (!contact) return
+      const bounds = contact.getBoundingClientRect()
+      setNavOnDark(bounds.top <= 78 && bounds.bottom >= 0)
+    }
+    updateNavTone()
+    window.addEventListener('scroll', updateNavTone, { passive: true })
+    window.addEventListener('resize', updateNavTone)
+    return () => {
+      window.removeEventListener('scroll', updateNavTone)
+      window.removeEventListener('resize', updateNavTone)
+    }
+  }, [])
 
   return (
     <main className="site-shell">
       <Cursor />
       <AudioControl />
-      <nav className="site-nav" aria-label="Main navigation">
+      <nav className={`site-nav ${navOnDark ? 'site-nav-dark' : ''}`} aria-label="Main navigation">
         <a className="brand-lockup" href="#home" aria-label="Ameya Raut home">
           <span className="brand-mark"><img className="brand-avatar" src="/luffy-avatar.jpg" alt="" /><i /></span>
           <span className="brand-name">Ameya Raut</span>

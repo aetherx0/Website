@@ -21,17 +21,23 @@ import { easing } from 'maath'
 const cModel = '/c-transformed.glb' // lives in /public
 
 const accents = ['#4060ff', '#20ffa0', '#ff4060', '#ffcc00']
-const shuffle = (accent = 0) => [
-  { color: '#444', roughness: 0.1 },
-  { color: '#444', roughness: 0.75 },
-  { color: '#444', roughness: 0.75 },
-  { color: 'white', roughness: 0.1 },
-  { color: 'white', roughness: 0.75 },
-  { color: 'white', roughness: 0.1 },
-  { color: accents[accent], roughness: 0.1, accent: true },
-  { color: accents[accent], roughness: 0.75, accent: true },
-  { color: accents[accent], roughness: 0.1, accent: true },
-]
+const shuffle = (accent = 0) => {
+  const palette = [
+    { color: accents[accent], roughness: 0.1, accent: true },
+    { color: '#444', roughness: 0.75 },
+    { color: 'white', roughness: 0.1 },
+    { color: accents[accent], roughness: 0.75, accent: true },
+    { color: '#444', roughness: 0.1 },
+    { color: accents[accent], roughness: 0.1, accent: true },
+    { color: 'white', roughness: 0.75 },
+    { color: '#444', roughness: 0.75 },
+    { color: accents[accent], roughness: 0.75, accent: true },
+  ]
+
+  return Array.from({ length: 27 }, (_, index) => ({
+    ...palette[index % palette.length],
+  }))
+}
 
 function AdaptiveFrame() {
   const { camera, size } = useThree()

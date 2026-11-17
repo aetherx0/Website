@@ -3,6 +3,8 @@
   position: absolute;
   z-index: 1;
   overflow: hidden;
+  contain: paint;
+  clip-path: inset(0 round 20px);
   border-radius: 20px;
   background: #141622;
   pointer-events: auto;

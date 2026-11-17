@@ -37,11 +37,13 @@ function AdaptiveFrame() {
   const { camera, size } = useThree()
   useEffect(() => {
     if (!camera.isPerspectiveCamera || size.width < 1 || size.height < 1) return
-    const distance = 28
+    const distance = 35
     const aspect = size.width / size.height
-    const targetSpan = 20
+    const targetSpan = 24
     const verticalSpan = Math.max(targetSpan, targetSpan / aspect)
-    camera.position.set(0, 0, distance)
+    const target = new THREE.Vector3(3.5, 3.5, 0)
+    camera.position.set(target.x, target.y, distance)
+    camera.lookAt(target)
     camera.fov = THREE.MathUtils.radToDeg(
       2 * Math.atan(verticalSpan / (2 * distance)),
     )

@@ -27,12 +27,20 @@ export default function ConnectorsFrame() {
     const hero = wrapper?.closest<HTMLElement>('.hero')
     if (!wrapper || !hero) return
 
+    const sideNote = hero.querySelector<HTMLElement>('.hero-side-note')
+    const originalSideNoteStyle = sideNote?.getAttribute('style') ?? null
+    const restoreSideNote = () => {
+      if (!sideNote) return
+      if (originalSideNoteStyle === null) sideNote.removeAttribute('style')
+      else sideNote.setAttribute('style', originalSideNoteStyle)
+    }
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
     let animationFrame = 0
     const measurePlacement = () => {
       window.cancelAnimationFrame(animationFrame)
       animationFrame = window.requestAnimationFrame(() => {
         if (window.innerWidth <= 1199 || reducedMotion.matches) {
+          restoreSideNote()
           setPlacement(null)
           return
         }
@@ -40,8 +48,8 @@ export default function ConnectorsFrame() {
         const kicker = hero.querySelector<HTMLElement>('.hero-kicker')
         const heading = hero.querySelector<HTMLElement>('.hero h1')
         const buttons = hero.querySelector<HTMLElement>('.hero-actions')
-        const sideNote = hero.querySelector<HTMLElement>('.hero-side-note')
         if (!kicker || !heading || !buttons || !sideNote) {
+          restoreSideNote()
           setPlacement(null)
           return
         }
@@ -57,13 +65,15 @@ export default function ConnectorsFrame() {
           0,
           ...Array.from(headingLetters, (letter) => letter.getBoundingClientRect().right),
         )
-        const left = textRight - heroRect.left + 48
-        const right = noteRect.left - heroRect.left - 24
+        const left = textRight - heroRect.left + 80
+        const right = heroRect.width - 24
         const availableWidth = right - left
-        const width = Math.min(heroRect.width * 0.35, availableWidth)
+        const availableHeight = buttonsRect.bottom - kickerRect.top
+        const maxWidth = availableHeight * (4 / 3)
+        const width = Math.min(maxWidth, availableWidth)
+        const height = Math.min(availableHeight, width)
         const minWidth = heroRect.width * 0.15
         const top = kickerRect.top - heroRect.top
-        const height = buttonsRect.bottom - kickerRect.top
 
         if (
           headingLetters.length === 0 ||
@@ -71,9 +81,15 @@ export default function ConnectorsFrame() {
           width < minWidth ||
           height <= 0
         ) {
+          restoreSideNote()
           setPlacement(null)
           return
         }
+
+        sideNote.style.left = `${Math.round((left + width - noteRect.width) * 100) / 100}px`
+        sideNote.style.right = 'auto'
+        sideNote.style.top = `${Math.round((top - noteRect.height - 8) * 100) / 100}px`
+        sideNote.style.zIndex = '2'
 
         setPlacement({
           left: Math.round(left * 100) / 100,
@@ -104,6 +120,7 @@ export default function ConnectorsFrame() {
       resizeObserver.disconnect()
       window.removeEventListener('resize', measurePlacement)
       reducedMotion.removeEventListener('change', measurePlacement)
+      restoreSideNote()
     }
   }, [])
 
@@ -147,7 +164,7 @@ export default function ConnectorsFrame() {
       window.removeEventListener('message', handleReady)
       sendFrameLoop(false)
     }
-  }, [])
+  }, [placement])
 
   const handleFrameLoad = () => {
     const message: SceneMessage = {

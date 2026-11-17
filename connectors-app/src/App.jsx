@@ -22,6 +22,7 @@ export default function App() {
   const [frameLoop, setFrameLoop] = useState('never')
 
   useEffect(() => {
+    let readyFrame = 0
     const handleMessage = (event) => {
       if (event.source !== window.parent || event.origin !== window.location.origin) return
       const message = event.data
@@ -34,8 +35,15 @@ export default function App() {
     }
 
     window.addEventListener('message', handleMessage)
-    window.parent.postMessage({ type: 'connectors:ready' }, window.location.origin)
-    return () => window.removeEventListener('message', handleMessage)
+    readyFrame = window.requestAnimationFrame(() => {
+      readyFrame = window.requestAnimationFrame(() => {
+        window.parent.postMessage({ type: 'connectors:ready' }, window.location.origin)
+      })
+    })
+    return () => {
+      window.cancelAnimationFrame(readyFrame)
+      window.removeEventListener('message', handleMessage)
+    }
   }, [])
 
   return (

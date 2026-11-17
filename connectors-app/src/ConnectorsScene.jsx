@@ -45,9 +45,9 @@ function AdaptiveFrame() {
     if (!camera.isPerspectiveCamera || size.width < 1 || size.height < 1) return
     const distance = 35
     const aspect = size.width / size.height
-    const targetSpan = 24
+    const targetSpan = 16.5
     const verticalSpan = Math.max(targetSpan, targetSpan / aspect)
-    const target = new THREE.Vector3(3.5, 3.5, 0)
+    const target = new THREE.Vector3(0, 0, 0)
     camera.position.set(target.x, target.y, distance)
     camera.lookAt(target)
     camera.fov = THREE.MathUtils.radToDeg(
@@ -88,7 +88,7 @@ export function ConnectorsScene(props) {
         {connectors.map((props, i) => (
           <Connector key={i} {...props} />
         ))}
-        <Connector position={[10, 10, 5]}>
+        <Connector>
           <Model>
             <MeshTransmissionMaterial
               clearcoat={1}

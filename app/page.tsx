@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import type { ReactNode } from 'react'
+import ConnectorsFrame from '../components/ConnectorsFrame'
 
 type IconName =
   | 'html'
@@ -365,6 +366,7 @@ export default function Home() {
           <p className="hero-subtext">Building at the intersection of physical systems and data-driven intelligence.</p>
           <div className="hero-actions"><MagneticLink href="#projects">View My Work</MagneticLink><MagneticLink href="#contact" secondary>Let&apos;s Talk</MagneticLink></div>
         </div>
+        <ConnectorsFrame />
         <div className="hero-bottomline"><span>01 / 04</span><span>Scroll to explore <span className="scroll-arrow">↘</span></span><span>Based in India · 2026</span></div>
         <div className="hero-side-note">01<br /><span>ENGINEER<br />IN MOTION</span></div>
       </section>

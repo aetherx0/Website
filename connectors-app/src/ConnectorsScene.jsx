@@ -45,7 +45,7 @@ function AdaptiveFrame() {
     if (!camera.isPerspectiveCamera || size.width < 1 || size.height < 1) return
     const distance = 35
     const aspect = size.width / size.height
-    const targetSpan = 16.5
+    const targetSpan = 12.5 // Intentionally crop a few outer connectors at the card edge.
     const verticalSpan = Math.max(targetSpan, targetSpan / aspect)
     const target = new THREE.Vector3(0, 0, 0)
     camera.position.set(target.x, target.y, distance)

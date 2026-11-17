@@ -1,8 +1,8 @@
 // Based on https://twitter.com/lusionltd/status/1701534187545636964 (lusion.co)
 // Demo by Paul Henschel / pmndrs: https://github.com/pmndrs/examples
 import * as THREE from 'three'
-import { useRef, useReducer, useMemo } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { useRef, useReducer, useMemo, useEffect } from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import {
   useGLTF,
   MeshTransmissionMaterial,
@@ -33,6 +33,25 @@ const shuffle = (accent = 0) => [
   { color: accents[accent], roughness: 0.1, accent: true },
 ]
 
+function AdaptiveFrame() {
+  const { camera, size } = useThree()
+  useEffect(() => {
+    if (!camera.isPerspectiveCamera || size.width < 1 || size.height < 1) return
+    const distance = 28
+    const aspect = size.width / size.height
+    const targetSpan = 20
+    const verticalSpan = Math.max(targetSpan, targetSpan / aspect)
+    camera.position.set(0, 0, distance)
+    camera.fov = THREE.MathUtils.radToDeg(
+      2 * Math.atan(verticalSpan / (2 * distance)),
+    )
+    camera.near = 1
+    camera.far = 60
+    camera.updateProjectionMatrix()
+  }, [camera, size.width, size.height])
+  return null
+}
+
 export function ConnectorsScene(props) {
   const [accent, click] = useReducer((state) => ++state % accents.length, 0)
   const connectors = useMemo(() => shuffle(accent), [accent])
@@ -42,10 +61,11 @@ export function ConnectorsScene(props) {
       shadows
       dpr={[1, 1.5]}
       gl={{ antialias: false }}
-      camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}
+      camera={{ position: [0, 0, 28], fov: 28, near: 1, far: 60 }}
       {...props}
     >
       <color attach="background" args={['#141622']} />
+      <AdaptiveFrame />
       <ambientLight intensity={0.4 * Math.PI} />
       <spotLight
         position={[10, 10, 10]}

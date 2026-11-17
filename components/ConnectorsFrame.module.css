@@ -1,14 +1,15 @@
 .feature {
+  display: none;
   position: absolute;
   z-index: 1;
-  top: 55%;
-  right: clamp(56px, 5vw, 72px);
-  width: clamp(230px, 22vw, 315px);
-  height: min(32vh, 300px);
   overflow: hidden;
   border-radius: 20px;
   background: #141622;
   pointer-events: auto;
+}
+
+.feature[data-visible='true'] {
+  display: block;
 }
 
 .frame {
@@ -21,6 +22,6 @@
 
 @media (max-width: 1199px), (prefers-reduced-motion: reduce) {
   .feature {
-    display: none;
+    display: none !important;
   }
 }
